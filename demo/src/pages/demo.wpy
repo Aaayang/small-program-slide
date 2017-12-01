@@ -1,0 +1,228 @@
+<style>
+.home_bg {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.we-container {
+  width: 100%;
+  height: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  position: fixed;
+  overflow: hidden;
+  z-index: 1;
+}
+.we-wrapper {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: calc(100% - 200rpx);
+  z-index: 1;
+  display: flex;
+  transition-property: transform;
+  padding: 128rpx 0 25rpx 105rpx;
+  box-sizing: border-box;
+}
+
+.we-container-vertical > .we-wrapper {
+  flex-direction: column;
+}
+.we-slide {
+  flex-shrink: 0;
+  position: relative;
+  transform: scale(0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 500rpx;
+  margin: 0 25rpx 25rpx;
+  box-sizing: border-box;
+  color: #fff;
+  border-radius: 20rpx;
+}
+
+.we-slide:nth-child(1) {
+  background-color: #4390ee;
+}
+.we-slide:nth-child(2) {
+  background-color: #ca4040;
+}
+.we-slide:nth-child(3) {
+  background-color: #ff8604;
+}
+
+/* 标题文字 */
+.wc-title {
+  line-height: 128rpx;
+  display: flex;
+  text-align: center;
+  font-size: 28rpx;
+  color: #888;
+}
+.wc-title view {
+  flex: 1;
+}
+.wc-title-active {
+  color: #000;
+  color: 000;
+  opacity: 1;
+  transform: scale(1.3);
+  transition: 0.6s;
+}
+
+/* 卡片样式 */
+.wc-con-active0 {
+  transform: scale(1);
+  transition: 0.6s;
+  box-shadow: 0 0 24px 0 rgba(241, 137, 71, 0.22),
+    0 24px 24px 0 rgba(241, 137, 71, 0.3);
+}
+.wc-con-active1 {
+  transform: scale(1);
+  transition: 0.6s;
+  box-shadow: 0 0 24px 0 rgba(235, 51, 73, 0.22),
+    0 24px 24px 0 rgba(235, 51, 73, 0.3);
+}
+.wc-con-active2 {
+  transform: scale(1);
+  transition: 0.6s;
+  box-shadow: 0 0 24px 0 rgba(47, 128, 237, 0.22),
+    0 24px 24px 0 rgba(47, 128, 237, 0.3);
+}
+
+.img {
+  width: 100%;
+  height: auto;
+}
+
+.packet-text {
+  margin-top: 100rpx;
+  text-align: center;
+}
+.pt-txt1 {
+  font-size: 36rpx;
+}
+.pt-txt2 {
+  margin-top: 20rpx;
+  font-size: 24rpx;
+  opacity: 0.7;
+}
+</style>
+
+<template>
+    <view class="home-page">
+        <block wx:if="{{type == 'seltype'}}">
+          <view class="we-container {{directionClass}}">
+            <view class="wc-title">
+              <view class="{{activeTileNow === 0 ? 'wc-title-active' : ''}}">情绪红包</view>
+              <view class="{{activeTileNow === 1 ? 'wc-title-active' : ''}}">语音红包</view>
+              <view class="{{activeTileNow === 2 ? 'wc-title-active' : ''}}">男女红包</view>
+            </view>
+            <view class="we-wrapper"
+              @touchstart="touchstart"
+              @touchmove="touchmove"
+              @touchend="touchend"
+              animation="{{animationData}}">
+              <!-- #EC7D46 -->
+              <view @tap="slideTap" data-tag="emotionPacket" class="we-slide {{activeConNow === 0 ? 'wc-con-active' + activeConNow : ''}}" style="background: url({{imgData[0].url}}) no-repeat; background-size: cover;">
+                <!-- background: url({{imgData[0 ].url}}) no-repeat; -->
+                <view class="packet-text">
+                  <view class="pt-txt1">点击生成情绪红包</view>
+                  <view class="pt-txt2">小伙伴们说对口令就能获得随机金额</view>
+                </view>
+              </view>
+              <!-- #E42644 -->
+              <view @tap="slideTap" data-tag="normalPacket" class="we-slide {{activeConNow === 1 ? 'wc-con-active' + activeConNow : ''}}" style="background: url({{imgData[1].url}}) no-repeat; background-size: cover;">
+                <!-- background: url({{imgData[1].url}}) no-repeat; -->
+                <view class="packet-text">
+                  <view class="pt-txt1">点击生成语音红包</view>
+                  <view class="pt-txt2">小伙伴们说对口令就能获得随机金额</view>
+                </view>
+              </view>
+              <!-- #3279E7 -->
+              <view @tap="slideTap" data-tag="genderPacket" class="we-slide {{activeConNow === 2 ? 'wc-con-active' + activeConNow : ''}}" style="background: url({{imgData[2].url}}) no-repeat; background-size: cover;">
+                <!-- background: url({{imgData[2].url}}) no-repeat; -->
+                <view class="packet-text">
+                  <view class="pt-txt1">点击生成男女生红包</view>
+                  <view class="pt-txt2">小伙伴们说对口令就能获得随机金额</view>
+                </view>
+              </view>
+            </view>
+          </view>
+        </block>
+        <nav/>
+    </view>
+</template>
+<script>
+import wepy from "wepy";
+import nav from "../components/nav";
+import weSwiper from "../utils/weSwiper.js";
+import imgData from "../utils/imgData.js";
+let spkCase = null;
+
+export default class index extends wepy.page {
+  components = {
+    nav
+  };
+  config = {
+    navigationBarTitleText: `一呼百音`,
+    navigationBarTextStyle: "#fff",
+    navigationBarBackgroundColor: "#F04C46",
+    backgroundColor: "#fff",
+    enablePullDownRefresh: false
+  };
+  data = {
+    type: "seltype",
+    activeTileNow: 1,
+    activeConNow: 1,
+    imgData: [
+      {
+        url: imgData.img1
+      },
+      {
+        url: imgData.img2
+      },
+      {
+        url: imgData.img3
+      }
+    ]
+  };
+  methods = {
+    touchstart(e) {
+      spkCase.touchstart(e);
+    },
+    touchmove(e) {
+      spkCase.touchmove(e);
+    },
+    touchend(e) {
+      spkCase.touchend(e);
+    },
+    slideTap(e) {
+      console.log(e.target.dataset.tag);
+    }
+  };
+  initSlide() {
+    let self = this;
+    const device = wx.getSystemInfoSync();
+    spkCase = new weSwiper({
+      animationViewName: "animationData",
+      slideLength: 3,
+      initialSlide: 1,
+      width: 550 * device.windowWidth / 750,
+      height: 500 * device.windowWidth / 750,
+      onSlideChangeStart(weswiper) {
+        // slide达到过渡条件时执行
+        self.activeTileNow = weswiper.activeIndex;
+        self.activeConNow = weswiper.activeIndex;
+        self.$apply();
+      }
+    });
+  }
+  onLoad(option) {
+    // 初始化
+    this.initSlide();
+  }
+}
+</script>

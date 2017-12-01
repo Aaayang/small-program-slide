@@ -1,0 +1,69 @@
+<style lang="less">
+.nav {
+  z-index: 100;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  background: #fff;
+  height: 98rpx;
+  box-shadow: 0 0 4rpx 0 rgba(0, 0, 0, 0.03), 0 -2rpx 8rpx 0 rgba(0, 0, 0, 0.06);
+}
+
+.nav-item {
+  width: 33.33%;
+  text-align: center;
+  font-size: 20rpx;
+  line-height: 20rpx;
+  padding-top: 12rpx;
+  color: #616161;
+}
+.nav-item-select {
+  color: #eb3349;
+}
+
+.nav-item-icon {
+  width: 50rpx;
+  height: 52rpx;
+  display: block;
+  margin: 0 auto 6rpx;
+}
+</style>
+<template>
+    <view class="nav">
+        <view data-type="seltype" bindtap="changeType" class="{{'nav-item '+ (type!='seltype'?'':'nav-item-select')}}">
+            <image data-type="seltype" class="nav-item-icon" src="{{'../images/'+(type!='seltype'?'tab_icon_red_pocket_normal@3x.png':'tab_icon_red_pocket_selected@3x.png')}}" /> 发红包
+        </view>
+        <view data-type="extract" bindtap="changeType" class="{{'nav-item '+ (type!='extract'?'':'nav-item-select')}}">
+            <image data-type="extract" class="nav-item-icon" src="{{'../images/'+(type!='extract'?'tab_icon_withdraw_normal@3x.png':'tab_icon_withdraw_selected@3x.png')}}" /> 余额提现
+        </view>
+        <view  data-type="record" bindtap="changeType" class="{{'nav-item '+ (type!='record'?'':'nav-item-select')}}">
+            <image data-type="record" class="nav-item-icon" src="{{'../images/'+(type!='record'?'tab_icon_record_normal@3x.png':'tab_icon_record_selected@3x.png')}}" /> 我的记录
+        </view>
+        <view data-type="question" bindtap="changeType" class="{{'nav-item '+ (type!='question'?'':'nav-item-select')}}">
+            <image data-type="question" class="nav-item-icon" src="{{'../images/'+(type!='question'?'tab_icon_question_normal@3x.png':'tab_icon_question_seclected@3x.png')}}" /> 常见问题
+        </view>
+    </view>
+</template>
+<script>
+import wepy from "wepy";
+
+export default class Panel extends wepy.component {
+  data = {
+    type: "seltype"
+  };
+  initType(type) {
+    this.type = type;
+    this.$apply();
+  }
+  methods = {
+    changeType(e) {
+      let type = e.target.dataset.type;
+      this.type = type;
+      this.$apply();
+    },
+  };
+}
+</script>
